@@ -14,12 +14,8 @@ export function RestartTimer() {
   return window['go']['backend']['Backend']['RestartTimer']();
 }
 
-export function SetHours(arg1) {
-  return window['go']['backend']['Backend']['SetHours'](arg1);
-}
-
-export function SetMinutes(arg1) {
-  return window['go']['backend']['Backend']['SetMinutes'](arg1);
+export function SetTimerDuration(arg1, arg2) {
+  return window['go']['backend']['Backend']['SetTimerDuration'](arg1, arg2);
 }
 
 export function TimerActive() {

@@ -16,7 +16,6 @@ type Backend struct {
 	timerActive bool
 	ctx         context.Context
 	timer       *time.Timer
-	stopChannel chan struct{}
 }
 
 func NewBackend() *Backend {
@@ -24,7 +23,6 @@ func NewBackend() *Backend {
 		hours:       defaultHours,
 		minutes:     defaultMinutes,
 		timerActive: defaultTimerActive,
-		stopChannel: make(chan struct{}),
 	}
 }
 
@@ -32,24 +30,20 @@ func (b *Backend) Startup(ctx context.Context) {
 	b.ctx = ctx
 }
 
+func (b *Backend) SetTimerDuration(hours int, minutes int) {
+	b.hours = hours
+	b.minutes = minutes
+	if !(b.hours == 0 && b.minutes == 0) {
+		b.RestartTimer()
+	}
+}
+
 func (b *Backend) Hours() int {
 	return b.hours
 }
 
-func (b *Backend) SetHours(hours int) {
-	b.hours = hours
-	fmt.Printf("Hours changed, new value is: %v\n", b.hours)
-	b.RestartTimer()
-}
-
 func (b *Backend) Minutes() int {
 	return b.minutes
-}
-
-func (b *Backend) SetMinutes(minutes int) {
-	b.minutes = minutes
-	fmt.Printf("Minutes changed, new value is: %v\n", b.minutes)
-	b.RestartTimer()
 }
 
 func (b *Backend) TimerActive() bool {
@@ -58,27 +52,34 @@ func (b *Backend) TimerActive() bool {
 
 func (b *Backend) ToggleTimer() {
 	b.timerActive = !b.timerActive
-	fmt.Printf("Timer switch toggled, new value is: %v\n", b.timerActive)
 	b.RestartTimer()
 }
 
 func (b *Backend) RestartTimer() {
 	// stop current timer, if present
-	if b.timer != nil {
-		b.timer.Stop()
-		close(b.stopChannel)
-	}
+	b.stopTimer()
 
 	// if not timer active, return
 	if !b.timerActive {
-		b.timer = nil
 		return
 	}
 
 	// if timer active, start a new timer
-	// TODO
+	duration := time.Duration(b.hours)*time.Hour + time.Duration(b.minutes)*time.Minute
+	fmt.Printf("Starting timer for %v hours and %v minutes (%v total)\n", b.hours, b.minutes, duration)
+	b.timer = time.AfterFunc(duration, func() {
+		b.notifyTimerExpired()
+		b.RestartTimer()
+	})
 }
 
 func (b *Backend) notifyTimerExpired() {
 	// TODO
+}
+
+func (b *Backend) stopTimer() {
+	if b.timer != nil {
+		b.timer.Stop()
+		b.timer = nil
+	}
 }
