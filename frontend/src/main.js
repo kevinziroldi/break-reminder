@@ -1,5 +1,6 @@
 import {Hours, Minutes, TimerActive, ToggleTimer, SetTimerDuration, RestartTimer} from "../wailsjs/go/backend/Backend";
 import {stringifyTime, getHours, getMinutes} from "./utils.js";
+import {EventsOn} from "../wailsjs/runtime";
 
 (function() {
 
@@ -24,7 +25,29 @@ import {stringifyTime, getHours, getMinutes} from "./utils.js";
         })
 
         // start timer automatically
-        // TODO
+        RestartTimer().then()
+
+        // timer expiration
+        EventsOn("timerExpired", () => {
+            var timerActive, hours, minutes;
+            TimerActive().then((result) => {
+                timerActive = result;
+                Hours().then((result) => {
+                    hours = result;
+                    Minutes().then((result) => {
+                        minutes = result
+
+                        // display restart button
+                        if(timerActive && !(hours === 0 && minutes === 0)) {
+                            restartButton.classList.remove("hidden_element")
+                        }else {
+                            restartButton.classList.add("hidden_element")
+                        }
+                    });
+                });
+            });
+        });
+
     });
 
     // timer switch toggle
@@ -41,6 +64,7 @@ import {stringifyTime, getHours, getMinutes} from "./utils.js";
 
     // restart timer
     restartButton.addEventListener("click", () => {
+        restartButton.classList.add("hidden_element")
         RestartTimer().then();
     });
 
