@@ -10,12 +10,12 @@ export function Minutes() {
   return window['go']['backend']['Backend']['Minutes']();
 }
 
-export function RestartTimer() {
-  return window['go']['backend']['Backend']['RestartTimer']();
-}
-
 export function SetTimerDuration(arg1, arg2) {
   return window['go']['backend']['Backend']['SetTimerDuration'](arg1, arg2);
+}
+
+export function StartTimer() {
+  return window['go']['backend']['Backend']['StartTimer']();
 }
 
 export function TimerActive() {

@@ -5,9 +5,9 @@ export function Hours():Promise<number>;
 
 export function Minutes():Promise<number>;
 
-export function RestartTimer():Promise<void>;
-
 export function SetTimerDuration(arg1:number,arg2:number):Promise<void>;
+
+export function StartTimer():Promise<void>;
 
 export function TimerActive():Promise<boolean>;
 

@@ -15,11 +15,11 @@ var assets embed.FS
 func main() {
 	b := backend.NewBackend()
 
-	// Create application with options
+	// create application with options
 	err := wails.Run(&options.App{
 		Title:  "Break reminder",
-		Width:  1024,
-		Height: 768,
+		Width:  700,
+		Height: 400,
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},

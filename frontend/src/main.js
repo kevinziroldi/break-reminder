@@ -1,5 +1,5 @@
-import {Hours, Minutes, TimerActive, ToggleTimer, SetTimerDuration, RestartTimer} from "../wailsjs/go/backend/Backend";
-import {stringifyTime, getHours, getMinutes} from "./utils.js";
+import {Hours, Minutes, TimerActive, ToggleTimer, SetTimerDuration, StartTimer} from "../wailsjs/go/backend/Backend";
+import {stringifyTime, getHours, getMinutes, getElapsedTime} from "./utils.js";
 import {EventsOn} from "../wailsjs/runtime";
 
 (function() {
@@ -8,6 +8,10 @@ import {EventsOn} from "../wailsjs/runtime";
     var timerSwitch = document.getElementById("timer_switch").querySelector("input");
     var timerDuration = document.getElementById("timer_duration");
     var restartButton = document.getElementById("restart_timer");
+    var elapsedTime = document.getElementById("elapsed_time");
+    var breakMessage = document.getElementById("break_message");
+
+    var startTime;
 
     // app initialisation
     window.addEventListener("DOMContentLoaded", () => {
@@ -24,11 +28,21 @@ import {EventsOn} from "../wailsjs/runtime";
             })
         })
 
-        // start timer automatically
-        RestartTimer().then()
+        // timer started event
+        EventsOn("timerStarted", () => {
+            startTime = new Date()
+            elapsedTime.classList.remove("hidden_element");
+            setInterval(() => {
+                elapsedTime.innerHTML = getElapsedTime(startTime);
+            }, 1000);
+        })
 
         // timer expiration
         EventsOn("timerExpired", () => {
+            // hide elapsed time
+            elapsedTime.classList.add("hidden_element");
+
+            // display restart button
             var timerActive, hours, minutes;
             TimerActive().then((result) => {
                 timerActive = result;
@@ -36,8 +50,6 @@ import {EventsOn} from "../wailsjs/runtime";
                     hours = result;
                     Minutes().then((result) => {
                         minutes = result
-
-                        // display restart button
                         if(timerActive && !(hours === 0 && minutes === 0)) {
                             restartButton.classList.remove("hidden_element")
                         }else {
@@ -48,11 +60,16 @@ import {EventsOn} from "../wailsjs/runtime";
             });
         });
 
+        // break time event (a timer can expire before finishing)
+        EventsOn("breakTime", () => {
+           breakMessage.classList.remove("hidden_element");
+        });
     });
 
     // timer switch toggle
     timerSwitch.addEventListener("click", () => {
         ToggleTimer().then();
+        breakMessage.classList.add("hidden_element");
     });
 
     // timer duration change
@@ -65,7 +82,8 @@ import {EventsOn} from "../wailsjs/runtime";
     // restart timer
     restartButton.addEventListener("click", () => {
         restartButton.classList.add("hidden_element")
-        RestartTimer().then();
+        StartTimer().then();
+        breakMessage.classList.add("hidden_element");
     });
 
 })();

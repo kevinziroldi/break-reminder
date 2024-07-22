@@ -17,13 +17,23 @@
         <input type="checkbox" required>
         <span class="slider round"></span>
     </label>
+    <br>
 
     <!-- timer duration form -->
     <label for="timer_duration">Timer duration:</label>
-    <input type="time" id="timer_duration" required />
+    <input type="time" id="timer_duration" required /><br>
+    <br>
+
+    <!-- break message -->
+    <span id="break_message" class="hidden_element">Time for a break!</span>
 
     <!-- restart timer button -->
-    <button id="restart_timer" class="hidden_element">Restart timer</button>
+    <button id="restart_timer">Start timer</button>
+    <br>
+
+    <!-- elapsed time -->
+    <span id="elapsed_time" class="hidden_element"></span>
+    <br>
 
 </body>
 </html>

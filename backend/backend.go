@@ -17,6 +17,7 @@ type Backend struct {
 	timerActive bool
 	ctx         context.Context
 	timer       *time.Timer
+	bool
 }
 
 func NewBackend() *Backend {
@@ -56,7 +57,7 @@ func (b *Backend) ToggleTimer() {
 	b.notifyTimerExpired()
 }
 
-func (b *Backend) RestartTimer() {
+func (b *Backend) StartTimer() {
 	// stop current timer, if present
 	b.stopTimer()
 
@@ -67,10 +68,14 @@ func (b *Backend) RestartTimer() {
 
 	// if timer active, start a new timer
 	duration := time.Duration(b.hours)*time.Hour + time.Duration(b.minutes)*time.Minute
+
 	fmt.Printf("Starting timer for %v hours and %v minutes (%v total)\n", b.hours, b.minutes, duration)
+
 	b.timer = time.AfterFunc(duration, func() {
 		b.notifyTimerExpired()
+		runtime.EventsEmit(b.ctx, "breakTime")
 	})
+	runtime.EventsEmit(b.ctx, "timerStarted")
 }
 
 func (b *Backend) notifyTimerExpired() {
