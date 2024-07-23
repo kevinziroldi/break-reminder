@@ -46,7 +46,7 @@ import {EventsOn} from "../wailsjs/runtime";
         var minutes = getMinutes(event.target.value);
         var seconds = getSeconds(event.target.value);
         SetTimerDuration(hours, minutes, seconds).then(() => {
-            // if duration was 00:00, display button
+            // if duration was 00:00:00, display button
             displayStartButton(startButton);
         })
     });

@@ -8,8 +8,8 @@ import (
 )
 
 const defaultHours = 1
-const defaultMinutes = 2
-const defaultSeconds = 3
+const defaultMinutes = 0
+const defaultSeconds = 0
 
 type Backend struct {
 	hours   int
