@@ -10,18 +10,18 @@ export function Minutes() {
   return window['go']['backend']['Backend']['Minutes']();
 }
 
-export function SetTimerDuration(arg1, arg2) {
-  return window['go']['backend']['Backend']['SetTimerDuration'](arg1, arg2);
+export function Seconds() {
+  return window['go']['backend']['Backend']['Seconds']();
+}
+
+export function SetTimerDuration(arg1, arg2, arg3) {
+  return window['go']['backend']['Backend']['SetTimerDuration'](arg1, arg2, arg3);
 }
 
 export function StartTimer() {
   return window['go']['backend']['Backend']['StartTimer']();
 }
 
-export function TimerActive() {
-  return window['go']['backend']['Backend']['TimerActive']();
-}
-
-export function ToggleTimer() {
-  return window['go']['backend']['Backend']['ToggleTimer']();
+export function StopTimer() {
+  return window['go']['backend']['Backend']['StopTimer']();
 }

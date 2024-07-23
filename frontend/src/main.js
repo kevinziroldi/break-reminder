@@ -1,89 +1,105 @@
-import {Hours, Minutes, TimerActive, ToggleTimer, SetTimerDuration, StartTimer} from "../wailsjs/go/backend/Backend";
-import {stringifyTime, getHours, getMinutes, getElapsedTime} from "./utils.js";
+import {Hours, Minutes, Seconds, SetTimerDuration, StartTimer, StopTimer} from "../wailsjs/go/backend/Backend";
+import {stringifyTime, getHours, getMinutes, getElapsedTime, getSeconds} from "./utils.js";
 import {EventsOn} from "../wailsjs/runtime";
 
 (function() {
 
     // DOM elements
-    var timerSwitch = document.getElementById("timer_switch").querySelector("input");
     var timerDuration = document.getElementById("timer_duration");
-    var restartButton = document.getElementById("restart_timer");
     var elapsedTime = document.getElementById("elapsed_time");
     var breakMessage = document.getElementById("break_message");
+    var startButton = document.getElementById("start_timer");
+    var stopButton = document.getElementById("stop_timer");
 
     var startTime;
 
     // app initialisation
     window.addEventListener("DOMContentLoaded", () => {
-        // initialise timer switch
-        TimerActive().then((result) => {
-            timerSwitch.checked = result
-        });
 
-        // initialise timer duration
-        Hours().then((result) => {
-            var hours = result
+        // initialise default timer duration
+        Hours().then((hours) => {
             Minutes().then((minutes) => {
-                timerDuration.value = stringifyTime(hours, minutes)
-            })
-        })
-
-        // timer started event
-        EventsOn("timerStarted", () => {
-            startTime = new Date()
-            elapsedTime.classList.remove("hidden_element");
-            setInterval(() => {
-                elapsedTime.innerHTML = getElapsedTime(startTime);
-            }, 1000);
-        })
-
-        // timer expiration
-        EventsOn("timerExpired", () => {
-            // hide elapsed time
-            elapsedTime.classList.add("hidden_element");
-
-            // display restart button
-            var timerActive, hours, minutes;
-            TimerActive().then((result) => {
-                timerActive = result;
-                Hours().then((result) => {
-                    hours = result;
-                    Minutes().then((result) => {
-                        minutes = result
-                        if(timerActive && !(hours === 0 && minutes === 0)) {
-                            restartButton.classList.remove("hidden_element")
-                        }else {
-                            restartButton.classList.add("hidden_element")
-                        }
-                    });
+                Seconds().then((seconds) => {
+                    timerDuration.value = stringifyTime(hours, minutes, seconds)
                 });
             });
         });
 
-        // break time event (a timer can expire before finishing)
+        // break time event
         EventsOn("breakTime", () => {
-           breakMessage.classList.remove("hidden_element");
-        });
-    });
+            // hide elapsed time and stop button
+            elapsedTime.classList.add("hidden_element");
+            stopButton.classList.add("hidden_element");
 
-    // timer switch toggle
-    timerSwitch.addEventListener("click", () => {
-        ToggleTimer().then();
-        breakMessage.classList.add("hidden_element");
+            // reveal timer duration and start button
+            timerDuration.classList.remove("hidden_element");
+            displayStartButton(startButton);
+
+            // reveal break message
+            breakMessage.classList.remove("hidden_element");
+        });
     });
 
     // timer duration change
     timerDuration.addEventListener("input", (event) => {
         var hours = getHours(event.target.value);
         var minutes = getMinutes(event.target.value);
-        SetTimerDuration(hours, minutes).then()
+        var seconds = getSeconds(event.target.value);
+        SetTimerDuration(hours, minutes, seconds).then()
+
+        // if duration was 00:00, display button
+        displayStartButton(startButton);
     });
 
-    // restart timer
-    restartButton.addEventListener("click", () => {
-        restartButton.classList.add("hidden_element")
-        StartTimer().then();
+    // start timer button
+    startButton.addEventListener("click", () => {
+        // hide timer duration and start button
+        timerDuration.classList.add("hidden_element");
+        startButton.classList.add("hidden_element")
+
+        // if timer expired, hide break message
         breakMessage.classList.add("hidden_element");
+
+        // start timer
+        StartTimer().then();
+        // manage elapsed time
+        elapsedTime.innerHTML = "00:00:00";
+        startTime = new Date()
+        setInterval(() => {
+            elapsedTime.innerHTML = getElapsedTime(startTime);
+        }, 1000);
+
+        // reveal elapsed time and stop button
+        elapsedTime.classList.remove("hidden_element");
+        stopButton.classList.remove("hidden_element");
+    });
+
+    // stop timer button
+    stopButton.addEventListener("click", () => {
+        // hide elapsed time and stop button
+        elapsedTime.classList.add("hidden_element");
+        stopButton.classList.add("hidden_element");
+
+        // stop timer
+        StopTimer().then()
+
+        // reveal timer duration and start button
+        timerDuration.classList.remove("hidden_element");
+        displayStartButton(startButton);
     });
 
 })();
+
+function displayStartButton(startButton) {
+    Hours().then((hours) => {
+        Minutes().then((minutes) => {
+            Seconds().then((seconds) => {
+                if(!(hours === 0 && minutes === 0 && seconds === 0)) {
+                    startButton.classList.remove("hidden_element")
+                }else {
+                    startButton.classList.add("hidden_element")
+                }
+            })
+        });
+    });
+}

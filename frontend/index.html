@@ -12,28 +12,25 @@
     <!-- title -->
     <h1>Break reminder app</h1>
 
-    <!-- toggle switch turn on/off -->
-    <label id="timer_switch" class="switch">
-        <input type="checkbox" required>
-        <span class="slider round"></span>
-    </label>
-    <br>
-
     <!-- timer duration form -->
     <label for="timer_duration">Timer duration:</label>
-    <input type="time" id="timer_duration" required /><br>
-    <br>
-
-    <!-- break message -->
-    <span id="break_message" class="hidden_element">Time for a break!</span>
-
-    <!-- restart timer button -->
-    <button id="restart_timer">Start timer</button>
+    <input type="time" step="1" id="timer_duration" required /><br>
     <br>
 
     <!-- elapsed time -->
     <span id="elapsed_time" class="hidden_element"></span>
     <br>
+
+    <!-- start timer button -->
+    <button id="start_timer">Start timer</button>
+    <br>
+
+    <!-- stop timer button -->
+    <button id="stop_timer" class="hidden_element">Stop timer</button>
+    <br>
+
+    <!-- break message -->
+    <span id="break_message" class="hidden_element">Time for a break!</span>
 
 </body>
 </html>

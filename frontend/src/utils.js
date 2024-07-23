@@ -1,5 +1,5 @@
 // function used to create a string in format "HH:MM" from hours and minutes
-export function stringifyTime(hours, minutes) {
+export function stringifyTime(hours, minutes, seconds) {
     var result
 
     // hours
@@ -16,19 +16,33 @@ export function stringifyTime(hours, minutes) {
     else
         result += minutes.toString()
 
+    result += ":"
+
+    // seconds
+    if(seconds < 10)
+        result += "0" + seconds.toString();
+    else
+        result += seconds.toString()
+
     return result
 }
 
-// get hours from a time in stringified format "HH:MM"
+// get hours from a time in stringified format "HH:MM:SS"
 export function getHours(stringifiedTime) {
-    var [hours, minutes] = stringifiedTime.split(':');
+    var [hours, minutes, seconds] = stringifiedTime.split(':');
     return Number(hours)
 }
 
-// get minutes from a time in stringified format "HH:MM"
+// get minutes from a time in stringified format "HH:MM:SS"
 export function getMinutes(stringifiedTime) {
-    var [hours, minutes] = stringifiedTime.split(':');
+    var [hours, minutes, seconds] = stringifiedTime.split(':');
     return Number(minutes)
+}
+
+// get seconds from a time in stringified format "HH:MM:SS"
+export function getSeconds(stringifiedTime) {
+    var [hours, minutes, seconds] = stringifiedTime.split(':');
+    return Number(seconds)
 }
 
 // function that computes elapsed time

@@ -2,29 +2,27 @@ package backend
 
 import (
 	"context"
-	"fmt"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"time"
 )
 
 const defaultHours = 1
-const defaultMinutes = 0
-const defaultTimerActive = true
+const defaultMinutes = 2
+const defaultSeconds = 3
 
 type Backend struct {
-	hours       int
-	minutes     int
-	timerActive bool
-	ctx         context.Context
-	timer       *time.Timer
-	bool
+	hours   int
+	minutes int
+	seconds int
+	ctx     context.Context
+	timer   *time.Timer
 }
 
 func NewBackend() *Backend {
 	return &Backend{
-		hours:       defaultHours,
-		minutes:     defaultMinutes,
-		timerActive: defaultTimerActive,
+		hours:   defaultHours,
+		minutes: defaultMinutes,
+		seconds: defaultSeconds,
 	}
 }
 
@@ -40,49 +38,33 @@ func (b *Backend) Minutes() int {
 	return b.minutes
 }
 
-func (b *Backend) TimerActive() bool {
-	return b.timerActive
+func (b *Backend) Seconds() int {
+	return b.seconds
 }
 
-func (b *Backend) SetTimerDuration(hours int, minutes int) {
+func (b *Backend) SetTimerDuration(hours int, minutes int, seconds int) {
+	// stop timer (no timer should be set)
+	b.StopTimer()
+
+	// set new duration
 	b.hours = hours
 	b.minutes = minutes
-	b.stopTimer()
-	b.notifyTimerExpired()
-}
-
-func (b *Backend) ToggleTimer() {
-	b.timerActive = !b.timerActive
-	b.stopTimer()
-	b.notifyTimerExpired()
+	b.seconds = seconds
 }
 
 func (b *Backend) StartTimer() {
 	// stop current timer, if present
-	b.stopTimer()
+	b.StopTimer()
 
-	// if not timer active, return
-	if !b.timerActive {
-		return
-	}
-
-	// if timer active, start a new timer
-	duration := time.Duration(b.hours)*time.Hour + time.Duration(b.minutes)*time.Minute
-
-	fmt.Printf("Starting timer for %v hours and %v minutes (%v total)\n", b.hours, b.minutes, duration)
-
+	// compute duration
+	duration := time.Duration(b.hours)*time.Hour + time.Duration(b.minutes)*time.Minute + time.Duration(b.seconds)*time.Second
+	// start timer
 	b.timer = time.AfterFunc(duration, func() {
-		b.notifyTimerExpired()
 		runtime.EventsEmit(b.ctx, "breakTime")
 	})
-	runtime.EventsEmit(b.ctx, "timerStarted")
 }
 
-func (b *Backend) notifyTimerExpired() {
-	runtime.EventsEmit(b.ctx, "timerExpired")
-}
-
-func (b *Backend) stopTimer() {
+func (b *Backend) StopTimer() {
 	if b.timer != nil {
 		b.timer.Stop()
 		b.timer = nil
