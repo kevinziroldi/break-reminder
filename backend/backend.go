@@ -2,7 +2,6 @@ package backend
 
 import (
 	"context"
-	"fmt"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"time"
 )
@@ -51,8 +50,6 @@ func (b *Backend) SetTimerDuration(hours int, minutes int, seconds int) {
 	b.hours = hours
 	b.minutes = minutes
 	b.seconds = seconds
-
-	fmt.Printf("New duration set: %v:%v:%v\n", hours, minutes, seconds)
 }
 
 func (b *Backend) StartTimer() {
