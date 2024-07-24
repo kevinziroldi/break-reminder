@@ -81,19 +81,3 @@ export function getElapsedTime(startTime) {
 
     return hoursAsString + ":" + minutesAsString + ":" + secondsAsString;
 }
-
-export function sendNotification(content) {
-    if (Notification.permission === "granted") {
-        new Notification("Break Reminder", {
-            body: "Time for a break!"
-        });
-    } else if (Notification.permission !== "denied") {
-        Notification.requestPermission().then(permission => {
-            if (permission === "granted") {
-                new Notification("Break Reminder", {
-                    body: "Time for a break!"
-                });
-            }
-        });
-    }
-}

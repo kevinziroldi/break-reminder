@@ -2,6 +2,7 @@ package backend
 
 import (
 	"context"
+	"github.com/gen2brain/beeep"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"time"
 )
@@ -60,7 +61,15 @@ func (b *Backend) StartTimer() {
 	duration := time.Duration(b.hours)*time.Hour + time.Duration(b.minutes)*time.Minute + time.Duration(b.seconds)*time.Second
 	// start timer
 	b.timer = time.AfterFunc(duration, func() {
+		// emit event
 		runtime.EventsEmit(b.ctx, "breakTime")
+
+		// send notification
+		err := beeep.Notify("Break reminder", "Time for a break! ⏰", "build/appicon.png")
+		if err != nil {
+			panic(err)
+		}
+
 	})
 }
 

@@ -1,5 +1,5 @@
 import {Hours, Minutes, Seconds, SetTimerDuration, StartTimer, StopTimer} from "../wailsjs/go/backend/Backend";
-import {stringifyTime, getHours, getMinutes, getElapsedTime, getSeconds, sendNotification} from "./utils.js";
+import {stringifyTime, getHours, getMinutes, getElapsedTime, getSeconds} from "./utils.js";
 import {EventsOn} from "../wailsjs/runtime";
 
 (function() {
@@ -37,8 +37,6 @@ import {EventsOn} from "../wailsjs/runtime";
 
             // reveal break message
             breakMessage.classList.remove("hidden_element");
-            // send notification
-            sendNotification("It is time for a break! ⏰");
         });
     });
 
