@@ -65,7 +65,9 @@ func (b *Backend) StartTimer() {
 		runtime.EventsEmit(b.ctx, "breakTime")
 
 		// send notification
-		err := beeep.Notify("Break reminder", "Time for a break! ⏰", "build/appicon.png")
+		err := beeep.Notify(
+			"Break reminder",
+			"Time for a break! ⏰", "build/appicon.png")
 		if err != nil {
 			panic(err)
 		}
