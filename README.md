@@ -4,15 +4,7 @@
 Break reminder is an app that allows you to choose a timer duration and set a timer.  
 Once the timer elapses, the app sends you a notification reminding you to take a break.
 
-## Tools 
-This app was realized using Go for backend and HTML, CSS and JS for the frontend, thanks to Wails.  
-It also uses a third party library, called Beeep, in order to send desktop notifications when a timer elapses.  
-References:
-* [Go programming language](https://go.dev)
-* [Wails](https://wails.io)
-* [Beeep](https://github.com/gen2brain/beeep)
-
-## Installation guide
+## Installation
 In order to install the app, follow these steps:
 1. Clone the repository:  
    `git clone https://github.com/kevinziroldi/break-reminder.git`
@@ -23,6 +15,14 @@ In order to install the app, follow these steps:
 
 For Mac users, you can move the app to your application folder, copy-pasting / dragging it. 
 
-## App images
+## Technologies 
+This app was realized using Go for backend and HTML, CSS and JS for the frontend, thanks to Wails.  
+It also uses a third party library, called Beeep, in order to send desktop notifications when a timer elapses.  
+References:
+* [Go programming language](https://go.dev)
+* [Wails](https://wails.io)
+* [Beeep](https://github.com/gen2brain/beeep)
+
+## Preview
 <img src="https://github.com/kevinziroldi/break-reminder/blob/main/deliverables/timer_not_active.png">
 <img src="https://github.com/kevinziroldi/break-reminder/blob/main/deliverables/timer_active.png">
